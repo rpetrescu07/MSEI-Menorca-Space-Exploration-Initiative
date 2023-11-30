@@ -2,7 +2,7 @@
  // Definir variables para los datos que proporcionarás y para el resultado del cálculo
 
 
-float longitud1, latitud1, longitud2, latitud2;
+float latitud1, longitud1, latitud2, longitud2;
 float rumbo;
 float operacion1;
 float operacion2;
@@ -23,29 +23,29 @@ void loop()
 {
   //Açò és la part que haurem de canviar per les longituds i latiduds que arribin
   // Obtener datos desde el Monitor Serie (entrada)
-  //Serial.println("Ingresa la longitud del punt 1:");
-  while (!Serial.available()); // Esperar a que haya datos disponibles
-  longitud1 = 39.5551681387734; // Leer la longitud 1
-
   //Serial.println("Ingresa la latitud del punt 1:");
   while (!Serial.available()); // Esperar a que haya datos disponibles
-  latitud1 = 2.76114496266047; // Leer la latitud1
+  latitud1 = 39.5551681387734; // Leer la longitud 1
+
+  //Serial.println("Ingresa la longitud del punt 1:");
+  while (!Serial.available()); // Esperar a que haya datos disponibles
+  longitud1 = 2.76114496266047; // Leer la latitud1
  
   //Serial.println("Ingresa la longitud del punt 2:");
   while (!Serial.available()); // Esperar a que haya datos disponibles
-  longitud2 = 39.543441500413; // Leer la longitud 2
+  latitud2 = 39.543441500413; // Leer la longitud 2
  
   //Serial.println("Ingresa la latitud del punt 2:");
   while (!Serial.available()); // Esperar a que haya datos disponibles
-  latitud2 = 2.73628405219049; // Leer la latitud2
+  longitud2 = 2.73628405219049; // Leer la latitud2
  
  Serial.println(latitud2);
 
   // Conversió radians
-   operacion1 = (float) longitud1*(PI/180);
-   operacion2 = (float) latitud1*(PI/180);
-   operacion3 = (float) longitud2*(PI/180);
-   operacion4 = (float) latitud2*(PI/180);
+   operacion1 = (float) latitud1*(PI/180);
+   operacion2 = (float) longitud1*(PI/180);
+   operacion3 = (float) latitud2*(PI/180);
+   operacion4 = (float) longitud2*(PI/180);
    
    //increment longitud
    incremento_longitud = (float) operacion3 - operacion1;
