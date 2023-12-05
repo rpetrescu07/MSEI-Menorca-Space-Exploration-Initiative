@@ -15,7 +15,7 @@ void setup() {
   // tamaño de letra
   screen.setTextSize(1);
   // color del texto en pantalla ( r , g , b )
-  screen.stroke(255, 255, 255);
+  screen.stroke(0, 0, 0);
 
   // mostrar texto en pantalla con coordenadas x e y
   screen.text("HOLA MUNDO", 45, 20);
@@ -40,13 +40,4 @@ void loop() {
   screen.background(0, 0, 0);
   // tamaño de letra
   screen.setTextSize(4);
- 
-  // desplazamiento de derecha a izquierda
-  for (int i = 130; i >= -360; i = i - 10) {
-    screen.background(0, 0, 0);
-    screen.stroke(0, 255, 0);
-    screen.text("arduino-spain.site", i, 40);
-    delay(5);
-  }
-  delay(1000);
 }
