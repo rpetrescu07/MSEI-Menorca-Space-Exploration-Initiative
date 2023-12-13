@@ -4,40 +4,30 @@
 #define cs 10 // pin para conexión CS
 #define dc 9 // pin para conexión A0
 #define rst 8 // pin para conexión reset
-
 TFT screen = TFT(cs, dc, rst);
+
+
 
 void setup() {
   screen.begin();
-
-  // color de la pantalla ( r , g , b )
-  screen.background(0, 0, 0); 
-  // tamaño de letra
-  screen.setTextSize(1);
-  // color del texto en pantalla ( r , g , b )
-  screen.stroke(0, 0, 0);
-
-  // mostrar texto en pantalla con coordenadas x e y
-  screen.text("HOLA MUNDO", 45, 20);
-  delay(1000);
+   // limpieza de la pantalla
+  screen.background(255, 0, 0);
 }
 
+
+
 void loop() {
-  // limpieza de la pantalla
-  screen.background(0, 0, 0);
   // tamaño de letra
   screen.setTextSize(2);
+//color del text
+  screen.stroke(0, 0, 0);
+  screen.text("mundo", 3, 3);
 
-  // cambio suave del color del texto
-  for (int i = 0; i <= 255; i=i+5) {
-    screen.stroke(i, 255 - i, 255);
-    screen.text("HOLA MUNDO", 5, 50);
-    delay(5);
-  }
-  delay(1000);
 
+
+
+  delay(1500);
   // limpieza de la pantalla
-  screen.background(0, 0, 0);
-  // tamaño de letra
-  screen.setTextSize(4);
+  screen.background(255, 0, 0);
+  
 }
