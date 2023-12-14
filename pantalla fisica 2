@@ -1,0 +1,38 @@
+#include <Adafruit_GFX.h>    // Incluye la biblioteca de gráficos (Adafruit GFX Library)
+#include <Adafruit_ST7735.h> // Incluye la biblioteca para la pantalla TFT (Adafruit ST7735 Library)
+#include <SPI.h>             // Incluye la biblioteca SPI
+
+#define TFT_CS     10        // Pin CS de la pantalla conectado a pin 10 de Arduino
+#define TFT_RST    9         // Pin RST de la pantalla conectado a pin 9 de Arduino
+#define TFT_DC     8         // Pin DC de la pantalla conectado a pin 8 de Arduino
+
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
+
+void setup() {
+  tft.initR(INITR_BLACKTAB);  // Inicializa la pantalla con orientación predeterminada
+  tft.setRotation(1);         // Configura la rotación de la pantalla (dependiendo del modelo)
+
+  tft.fillScreen(ST77XX_BLACK); // Llena la pantalla con color negro al inicio
+  delay(1000);                  // Pequeña pausa para estabilizar la pantalla
+}
+
+void loop() {
+  int numero = 123; // Número que se mostrará en la pantalla
+  mostrarNumero(numero); // Llama a la función para mostrar el número
+  delay(2000); // Espera 2 segundos antes de borrar el número
+
+  borrarNumero(); // Llama a la función para borrar el número
+  delay(1000); // Pequeña pausa antes de mostrar el siguiente número
+}
+
+void mostrarNumero(int num) {
+  tft.setTextColor(ST77XX_WHITE); // Configura el color del texto
+  tft.setTextSize(2);             // Configura el tamaño del texto
+
+  tft.setCursor(20, 30); // Establece la posición del texto en la pantalla
+  tft.print(num);        // Muestra el número en la pantalla
+}
+
+void borrarNumero() {
+  tft.fillRect(20, 30, 60, 20, ST77XX_BLACK); // Borra el área donde se mostró el número
+}
