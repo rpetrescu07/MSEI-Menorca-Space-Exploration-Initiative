@@ -1,10 +1,11 @@
+
 #include <Adafruit_GFX.h>    // Incluye la biblioteca de gráficos (Adafruit GFX Library)
 #include <Adafruit_ST7735.h> // Incluye la biblioteca para la pantalla TFT (Adafruit ST7735 Library)
 #include <SPI.h>             // Incluye la biblioteca SPI
 
 #define TFT_CS     10        // Pin CS de la pantalla conectado a pin 10 de Arduino
-#define TFT_RST    9         // Pin RST de la pantalla conectado a pin 9 de Arduino
-#define TFT_DC     8         // Pin DC de la pantalla conectado a pin 8 de Arduino
+#define TFT_RST    8         // Pin RST de la pantalla conectado a pin 8 de Arduino
+#define TFT_DC     9         // Pin DC de la pantalla conectado a pin 9 de Arduino
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
