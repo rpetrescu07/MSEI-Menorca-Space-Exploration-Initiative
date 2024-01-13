@@ -68,13 +68,13 @@ void loop()
   Serial.print("El rumbo es: ");
   Serial.println(rumbo);
 
-  Serial.print("Longitud 1 en radianes: ");
-  Serial.println(operacion1);
   Serial.print("Latitud 1 en radianes: ");
+  Serial.println(operacion1);
+  Serial.print("Longitud 1 en radianes: ");
   Serial.println(operacion2);
-  Serial.print("Longitud 2 en radianes: ");
-  Serial.println(operacion3);
   Serial.print("Latitud 2 en radianes: ");
+  Serial.println(operacion3);
+  Serial.print("Longitud 2 en radianes: ");
   Serial.println(operacion4);
 
   delay(1000); // Esperar un segundo antes de repetir el proceso
