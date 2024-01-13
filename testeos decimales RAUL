@@ -1,0 +1,26 @@
+float numero1 = 39.348021;
+
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+Serial.print("Impresión numero base: ");
+Serial.println(numero1);
+
+float sindecimales = numero1*1000000;
+Serial.print("Impresión numero base multiplicado por 1000000: ");
+Serial.println(sindecimales);
+
+float dividido = sindecimales/1000000;
+Serial.print("Impresión numero sin decimales/1000000: ");
+Serial.println(dividido);
+
+float precision4enteros = dividido*10000;
+Serial.print("Impresión numero multiplicado por 10000: "); //para ver si recupera los decimales que no imprime
+Serial.println(precision4enteros);
+
+delay(1000);
+}
