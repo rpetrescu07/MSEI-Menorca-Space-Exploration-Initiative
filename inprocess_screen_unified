@@ -1,0 +1,69 @@
+#include <TFT.h>  
+#include <SPI.h>
+#include <Adafruit_GPS.h>
+
+// DEFINIR PINS
+#define cs   10
+#define dc   9
+#define rst  8
+#define GPSSerial Serial
+#define GPSECHO false
+
+// CONECTAR GPS AL PORT DE LA PLACA
+Adafruit_GPS GPS(&GPSSerial);
+
+
+uint32_t timer = millis();
+
+float latitud1, longitud1, latitud2, longitud2;
+float rumbo;
+float operacion1;
+float operacion2;
+float operacion3;
+float operacion4;
+float incremento_longitud;
+double azimut;
+
+// create an instance of the library
+TFT TFTscreen = TFT(cs, dc, rst);
+
+// char array to print to the screen
+char sensorPrintout[4];
+
+void setup() 
+{
+  Serial.begin(9600);
+//PANTALLA
+// Put this line at the beginning of every sketch that uses the GLCD:
+  TFTscreen.begin();
+  TFTscreen.background(0, 0, 0);
+// CREAR TEXT ESTATIC EN COLOR BLANC
+  TFTscreen.stroke(255, 255, 255);
+// MIDA DEL TEXT
+  TFTscreen.setTextSize(2);
+//QUÈ S'ESCRIU I EN QUINA POSICIÓ
+  TFTscreen.text("Rumbo:\n ", 0, 0);
+// ste the font size very large for the loop MIRAR DE CANVIAR AÇÒ
+  TFTscreen.setTextSize(2);
+}
+
+void loop() 
+//GPS+CÀLCUL
+{
+
+//PANTALLA
+//AQUI S'HA DE CANVIAR ANALOGREAD PEL RESULTAT DEL CÀLCUL DEL RUMBO
+  String(sensorVal) = String("rumbo");
+   TFTscreen.background(0, 0, 0);
+// CREAR TEXT ESTATIC EN COLOR BLANC
+  TFTscreen.stroke(255, 255, 255);
+// MIDA DEL TEXT
+  TFTscreen.setTextSize(2);
+//QUÈ S'ESCRIU I EN QUINA POSICIÓ
+int nrpantalla = 
+  TFTscreen.text("Contador:\n ", 0, 40);
+// ste the font size very large for the loop MIRAR DE CANVIAR AÇÒ
+  TFTscreen.setTextSize(2);
+
+  delay(500);
+}
