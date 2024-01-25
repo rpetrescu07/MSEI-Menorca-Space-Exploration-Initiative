@@ -1,0 +1,26 @@
+int rumboreal;
+float X;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+    X = 180; // el numero que tu quieras puedes poner, solo para probar cada cosa
+
+    if (X > -180 && X <= 0) {
+      Serial.println("derecha, servo 2");
+      delay(1000);
+    } else if (X > 0 && X < 180) {
+      Serial.println("izquierda, servo 1");
+      delay(1000);
+    } else if (X <= -180) {
+      Serial.println("izquierda, servo 1 por ser menos de -180");
+      delay(1000);
+    } else if (X >= 180) {
+      Serial.println("derecha, servo 2 por ser mas de 180");
+      delay(1000);
+    }
+  }
