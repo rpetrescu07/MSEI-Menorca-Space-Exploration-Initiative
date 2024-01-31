@@ -38,15 +38,9 @@ void setup()
 // Put this line at the beginning of every sketch that uses the GLCD:
   TFTscreen.begin();
   TFTscreen.background(0, 0, 0);
-// CREAR TEXT ESTATIC EN COLOR BLANC
-  TFTscreen.stroke(255, 255, 255);
-// MIDA DEL TEXT
-  TFTscreen.setTextSize(1);
-//QUÈ S'ESCRIU I EN QUINA POSICIÓ
-  TFTscreen.text("Rumbo:\n ", 0, 0);
   
 // ste the font size very large for the loop MIRAR DE CANVIAR AÇÒ
-  TFTscreen.setTextSize(5);
+  TFTscreen.setTextSize(2);
 }
 
 void loop() 
