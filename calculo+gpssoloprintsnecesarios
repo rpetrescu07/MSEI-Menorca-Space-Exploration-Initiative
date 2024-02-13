@@ -1,0 +1,184 @@
+// Test code for Ultimate GPS Using Hardware Serial (e.g. GPS Flora or FeatherWing)
+//
+// This code shows how to listen to the GPS module via polling. Best used with
+// Feathers or Flora where you have hardware Serial and no interrupt
+//
+// Tested and works great with the Adafruit GPS FeatherWing
+// ------> https://www.adafruit.com/products/3133
+// or Flora GPS
+// ------> https://www.adafruit.com/products/1059
+// but also works with the shield, breakout
+// ------> https://www.adafruit.com/products/1272
+// ------> https://www.adafruit.com/products/746
+//
+// Pick one up today at the Adafruit electronics shop
+// and help support open source hardware & software! -ada
+
+#include <Adafruit_GPS.h>
+
+// what's the name of the hardware serial port?
+#define GPSSerial Serial
+
+// Connect to the GPS on the hardware port
+Adafruit_GPS GPS(&GPSSerial);
+
+// Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
+// Set to 'true' if you want to debug and listen to the raw GPS sentences
+#define GPSECHO false
+
+uint32_t timer = millis();
+
+float latitud1, longitud1, latitud2, longitud2;
+float rumbo;
+float operacion1;
+float operacion2;
+float operacion3;
+float operacion4;
+float incremento_longitud;
+double azimut;
+
+void setup()
+{
+  //while (!Serial);  // uncomment to have the sketch wait until Serial is ready
+
+  // connect at 115200 so we can read the GPS fast enough and echo without dropping chars
+  // also spit it out
+  Serial.begin(115200);
+  Serial.println("Adafruit GPS library basic parsing test!");
+
+  // 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
+  GPS.begin(9600);
+  // uncomment this line to turn on RMC (recommended minimum) and GGA (fix data) including altitude
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
+  // uncomment this line to turn on only the "minimum recommended" data
+  //GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
+  // For parsing data, we don't suggest using anything but either RMC only or RMC+GGA since
+  // the parser doesn't care about other sentences at this time
+  // Set the update rate
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
+  // For the parsing code to work nicely and have time to sort thru the data, and
+  // print it out we don't suggest using anything higher than 1 Hz
+
+  // Request updates on antenna status, comment out to keep quiet
+  GPS.sendCommand(PGCMD_ANTENNA);
+
+  delay(1000);
+
+  // Ask for firmware version
+  GPSSerial.println(PMTK_Q_RELEASE);
+}
+
+void loop() // run over and over again
+{
+   // read data from the GPS in the 'main loop'
+  char c = GPS.read();
+  // if you want to debug, this is a good time to do it!
+  if (GPSECHO)
+    if (c) Serial.print(c);
+  // if a sentence is received, we can check the checksum, parse it...
+  if (GPS.newNMEAreceived()) {
+    if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
+      return; // we can fail to parse a sentence in which case we should just wait for another
+  }
+
+  // approximately every 2 seconds or so, print out the current stats
+  if (millis() - timer > 2000) {
+    timer = millis(); // reset the timer
+    Serial.print("\nTime: ");
+    if (GPS.hour < 10) { Serial.print('0'); }
+    Serial.print(GPS.hour, DEC); Serial.print(':');
+    if (GPS.minute < 10) { Serial.print('0'); }
+    Serial.print(GPS.minute, DEC); Serial.print(':');
+    if (GPS.seconds < 10) { Serial.print('0'); }
+    Serial.print(GPS.seconds, DEC); Serial.print('.');
+    if (GPS.milliseconds < 10) {
+      Serial.print("00");
+    } else if (GPS.milliseconds > 9 && GPS.milliseconds < 100) {
+      Serial.print("0");
+    }
+    Serial.println(" ");
+    //Serial.println(GPS.milliseconds);
+    //Serial.print("Date: ");
+    //Serial.print(GPS.day, DEC);
+    //Serial.print(GPS.month, DEC);
+    //Serial.println(GPS.year, DEC);
+    //Serial.print("Fix: "); Serial.print((int)GPS.fix);
+    //Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
+    if (GPS.fix) {
+      //Serial.print("Location: ");
+      float declatitud = (GPS.latitude/100);
+      float declongitud = (GPS.longitude/100);
+
+     // Serial.print(declatitud); Serial.print(GPS.lat);
+      //Serial.print(", ");
+      //Serial.print(declongitud); Serial.println(GPS.lon);
+     // Serial.print("Speed (knots): "); Serial.println(GPS.speed);
+      Serial.print("Angle: "); Serial.println(GPS.angle);
+     // Serial.print("Altitude: "); Serial.println(GPS.altitude);
+     // Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
+    //  Serial.print("Antenna status: "); Serial.println((int)GPS.antenna);
+    // read data from the GPS in the 'main loop
+
+      //Açò és la part que haurem de canviar per les longituds i latiduds que arribin
+      // Obtener datos desde el Monitor Serie (entrada)
+      //Serial.println("Ingresa la latitud del punt 1:");
+      while (!Serial.available()); // Esperar a que haya datos disponibles
+      latitud1 = declatitud; // Leer la longitud 1
+
+      //Serial.println("Ingresa la longitud del punt 1:");
+      while (!Serial.available()); // Esperar a que haya datos disponibles
+      longitud1 = declongitud; // Leer la latitud1
+    //SI LE QUITO LOS DECIMALES DE DETRAS ME SALEN 23,57 GRADOS. SI SE LOS DEJO, ME SALE IGUAL AL EXCEL, PROBAR CON EL CODIGO QUE COGE LA LATITUD GPS PARA VER SI DA LO MISMO QUE EL EXCEL, ASÍ DESCUBRIR SI COGE LOS DECIMALES.
+      //Serial.println("Ingresa la longitud del punt 2:");
+      while (!Serial.available()); // Esperar a que haya datos disponibles
+      latitud2 = 39.524398; // Leer la longitud 2
+    
+      //Serial.println("Ingresa la latitud del punt 2:");
+      while (!Serial.available()); // Esperar a que haya datos disponibles
+      longitud2 = 4.15923; // Leer la latitud2
+
+    //Serial.println(latitud2);
+
+      // Conversió radians
+      operacion1 = (float) latitud1*(PI/180);
+      operacion2 = (float) longitud1*(PI/180);
+      operacion3 = (float) latitud2*(PI/180);
+      operacion4 = (float) longitud2*(PI/180);
+      
+      //increment longitud
+      incremento_longitud = (float) operacion3 - operacion1;
+      
+      //azimut
+      float x = (sin(incremento_longitud));
+      //float y = cos(operacion2/10000)*tan(operacion4/10000)-sin(operacion2/10000)*cos(incremento_longitud/10000);
+      float y = cos(operacion2)*tan(operacion4)-sin(operacion2)*cos(incremento_longitud);
+      azimut = atan2(y, x); // Slope Y, Slope X
+    
+      //Serial.print("azimut x es: ");
+      //Serial.println(x);
+      //Serial.print("azimut y es: ");
+      //Serial.println(y);
+     // Serial.print("Azimut: ");
+      //Serial.println(azimut);
+      //convertir azimut a grados
+      rumbo = azimut*(180/PI);
+      
+      // Mostrar resultados
+      Serial.print("El rumbo ideal sería: ");
+      Serial.println(rumbo);
+
+     // Serial.print("Latitud 1 en radianes: ");
+     // Serial.println(operacion1);
+      //Serial.print("Longitud 1 en radianes: ");
+      //Serial.println(operacion2);
+     //.print("Latitud 2 en radianes: ");
+      //Serial.println(operacion3);
+      //Serial.print("Longitud 2 en radianes: ");
+      //Serial.println(operacion4);
+      //Serial.print("Incremento longitud: ");
+      //Serial.print(incremento_longitud);
+
+      delay(1000);
+       }
+  }
+}
