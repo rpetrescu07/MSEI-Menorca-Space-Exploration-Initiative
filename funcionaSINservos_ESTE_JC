@@ -196,7 +196,7 @@ void loop() // run over and over again
 } 
     ////////////////////////////////////////////////////////////////////// SERVOS
    void servos(){
-      X = rumbo - GPS.angle; // ideal-real
+      X = GPS.angle - rumbo; // real-ideal
 
     if (X > -180 && X <= 0) { //derecha
       servo2.write(0);
