@@ -91,7 +91,7 @@ void loop() {
       Serial.println(rumbo);
 
       ////////////////////////////////////////////////////////////////////// SERVOS
-      X = rumbo - GPS.angle;
+      X = GPS.angle - rumbo;
 
       Serial.print("X es: "); Serial.println(X);
 
