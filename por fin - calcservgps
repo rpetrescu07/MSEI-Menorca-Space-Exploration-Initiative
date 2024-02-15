@@ -9,7 +9,7 @@ Adafruit_GPS GPS(&GPSSerial);
 
 uint32_t timer = millis();
 
-float rumbo;
+float rumboideal;
 double azimut;
 
 Servo servo1;
@@ -18,9 +18,9 @@ float angle1;
 float angle2;
 float X;
 
-// Coordenadas de destino predefinidas
-const float latitud_destino = 39.88228411403223;  // Latitud del destino
-const float longitud_destino = 4.292526162862364;   // Longitud del destino
+// Coordenadas de destino predefinidas DESTINO
+const float latitud_destino = 39.87508059552429;  // Latitud del destino
+const float longitud_destino = 4.262374662519222;   // Longitud del destino
 
 void setup() {
   Serial.begin(115200);
@@ -71,11 +71,8 @@ void loop() {
       Serial.print("Longitud: "); Serial.println(GPS.longitudeDegrees);
       Serial.print("Angle: "); Serial.println(GPS.angle);
 
-      float declatitud = (GPS.latitudeDegrees);
-      float declongitud = (GPS.longitudeDegrees);
-
-      float operacion1 = (float) declatitud * (PI / 180);
-      float operacion2 = (float) declongitud * (PI / 180);
+      float operacion1 = (float) GPS.latitudeDegrees * (PI / 180); ///////////////***********//////// EL GITHUB NO LO TIENE ACTUALIZADO, PROBAR SI VA BIEN CON ESTO
+      float operacion2 = (float) GPS.longitudeDegrees * (PI / 180);
       float operacion3 = (float) latitud_destino * (PI / 180);
       float operacion4 = (float) longitud_destino * (PI / 180);
       
@@ -85,13 +82,13 @@ void loop() {
       float y = cos(operacion2) * tan(operacion4) - sin(operacion2) * cos(incremento_longitud);
       double azimut = atan2(y, x);
     
-      rumbo = azimut * (180 / PI);
+      rumboideal = azimut * (180 / PI);
       
       Serial.print("El rumbo ideal sería: ");
-      Serial.println(rumbo);
+      Serial.println(rumboideal);
 
       ////////////////////////////////////////////////////////////////////// SERVOS
-      X = GPS.angle - rumbo;//real-ideal
+      X = GPS.angle - rumboideal; //real menos ideal
 
       Serial.print("X es: "); Serial.println(X);
 
