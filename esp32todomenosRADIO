@@ -1,0 +1,197 @@
+/*****************************************
+  ESP32 GPS VKEL 9600 Bds
+This version is for T22_v01 20190612 board
+As the power management chipset changed, it
+require the axp20x library that can be found
+https://github.com/lewisxhe/AXP202X_Library
+You must import it as gzip in sketch submenu
+in Arduino IDE
+This way, it is required to power up the GPS
+module, before trying to read it.
+
+Also get TinyGPS++ library from: 
+https://github.com/mikalhart/TinyGPSPlus
+******************************************/
+
+#include <TinyGPS++.h>
+#include <axp20x.h>
+
+TinyGPSPlus gps;
+HardwareSerial GPS(1);
+AXP20X_Class axp;
+
+float rumboideal;
+double azimut;
+
+const float latitud_destino = 39.88459826910739;  // Latitud del destino
+const float longitud_destino = 4.291355863457464;   // Longitud del destino
+
+#include <ESP32Servo.h>
+Servo servo1;
+Servo servo2;
+float angle1;
+float angle2;
+float X;
+
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+
+#define BME_SCK 13
+#define BME_MISO 12
+#define BME_MOSI 11
+#define BME_CS 10
+
+#define SEALEVELPRESSURE_HPA (1029)//variable, consultar QNH localización
+
+Adafruit_BME280 bme; // I2C
+//Adafruit_BME280 bme(BME_CS); // hardware SPI
+//Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK); // software SPI
+
+void setup()
+{
+  Serial.begin(115200);
+  Wire.begin(21, 22);
+  if (!axp.begin(Wire, AXP192_SLAVE_ADDRESS)) {
+    Serial.println("AXP192 Begin PASS");
+  } else {
+    Serial.println("AXP192 Begin FAIL");
+  }
+  axp.setPowerOutPut(AXP192_LDO2, AXP202_ON);
+  axp.setPowerOutPut(AXP192_LDO3, AXP202_ON);
+  axp.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
+  axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
+  axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
+  GPS.begin(9600, SERIAL_8N1, 34, 12);   //34-TX 12-RX
+
+  Serial.println(F("BME280 test"));
+
+    unsigned status;
+    
+    // default settings
+    status = bme.begin();  
+    // You can also pass in a Wire library object like &Wire2
+    // status = bme.begin(0x76, &Wire2)
+    if (!status) {
+        Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
+        Serial.print("SensorID was: 0x"); Serial.println(bme.sensorID(),16);
+        Serial.print("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085\n");
+        Serial.print("   ID of 0x56-0x58 represents a BMP 280,\n");
+        Serial.print("        ID of 0x60 represents a BME 280.\n");
+        Serial.print("        ID of 0x61 represents a BME 680.\n");
+        while (1) delay(10);
+    }
+    
+    Serial.println("-- Default Test --");
+    Serial.println();
+
+  servo1.attach(32);
+  servo2.attach(33);
+}
+
+void loop()
+{
+  Serial.print("Latitude  : ");
+  Serial.println(gps.location.lat(), 5);
+  Serial.print("Longitude : ");
+  Serial.println(gps.location.lng(), 4);
+  Serial.print("Satellites: ");
+  Serial.println(gps.satellites.value());
+  Serial.print("Altitude  : ");
+  Serial.print(gps.altitude.feet() / 3.2808);
+  Serial.println("M");
+  Serial.print("Time      : ");
+  Serial.print(gps.time.hour());
+  Serial.print(":");
+  Serial.print(gps.time.minute());
+  Serial.print(":");
+  Serial.println(gps.time.second());
+  Serial.print("Speed     : ");
+  Serial.println(gps.speed.kmph()); 
+  Serial.print("Angle: ");
+  Serial.println(gps.course.deg());
+
+  float operacion1 = (float) gps.location.lat() * (PI / 180); ///////////////***********//////// EL GITHUB NO LO TIENE ACTUALIZADO, PROBAR SI VA BIEN CON ESTO
+  float operacion2 = (float) gps.location.lng() * (PI / 180);
+  float operacion3 = (float) latitud_destino * (PI / 180);
+  float operacion4 = (float) longitud_destino * (PI / 180);
+      
+  float incremento_longitud = (float) operacion3 - operacion1;
+      
+  float x = (sin(incremento_longitud));
+  float y = cos(operacion2) * tan(operacion4) - sin(operacion2) * cos(incremento_longitud);
+  double azimut = atan2(y, x);
+    
+  rumboideal = azimut * (180 / PI);
+  Serial.print("El rumbo ideal sería: ");
+  Serial.println(rumboideal);
+
+      X = gps.course.deg() - rumboideal; //real menos ideal
+
+      Serial.print("X es: "); Serial.println(X);
+      if (X <= 370 && X >= 350, X >= -10 && X <= 10){
+        Serial.println("Girar NADA");
+        servo1.write(0);
+        servo2.write(0);
+      }
+      else if (X >= 180) { //derecha
+        Serial.println("Gira a la derecha");
+        servo1.write(0);
+        servo2.write(75);
+      }
+      else if (X > 0 && X < 180) { //izquierda
+        Serial.println("Gira a la izquierda");
+        servo2.write(0);
+        servo1.write(75);
+      }
+      else if (X > -180 && X <= 0) { //derecha
+        Serial.println("Gira a la derecha");
+        servo1.write(0);
+        servo2.write(75);
+      }
+      else if (X <= -180) { //izquierda
+        Serial.println("Gira a la izquierda");
+        servo2.write(0);
+        servo1.write(75);
+      }
+  Serial.println("**********************");
+
+  bme280();
+
+  smartDelay(1000);
+
+  if (millis() > 5000 && gps.charsProcessed() < 10)
+    Serial.println(F("No GPS data received: check wiring"));
+}
+
+static void smartDelay(unsigned long ms)
+{
+  unsigned long start = millis();
+  do
+  {
+    while (GPS.available())
+      gps.encode(GPS.read());
+  } while (millis() - start < ms);
+}
+
+void bme280(){
+  Serial.print("Temperature = ");
+  Serial.print(bme.readTemperature());
+  Serial.println(" °C");
+
+  Serial.print("Pressure = ");
+
+  Serial.print(bme.readPressure() / 100.0F);
+  Serial.println(" hPa");
+
+  Serial.print("Approx. Altitude = ");
+  Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
+  Serial.println(" m");
+
+  Serial.print("Humidity = ");
+  Serial.print(bme.readHumidity());
+  Serial.println(" %");
+
+  Serial.println();
+}
