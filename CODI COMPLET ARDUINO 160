@@ -21,8 +21,8 @@ BME280 myBME280;
 bool printedCompensation = false;
 int ensStatus;
 
-float rh;
-float tempC;
+int rh;
+int tempC;
 
 
 
@@ -50,7 +50,7 @@ void setup() {
   
   
 
-  Serial.print(tempC);
+  
 
   // Reset the indoor air quality sensor's settings.
   if (myENS.setOperatingMode(SFE_ENS160_RESET))
@@ -67,25 +67,19 @@ void setup() {
   // Set to standard operation
   // Others include SFE_ENS160_DEEP_SLEEP and SFE_ENS160_IDLE
   myENS.setOperatingMode(SFE_ENS160_STANDARD);
-
-  // There are four values here:
-  // 0 - Operating ok: Standard Opepration
-  // 1 - Warm-up: occurs for 3 minutes after power-on.
-  // 2 - Initial Start-up: Occurs for the first hour of operation.
-  //												and only once in sensor's lifetime.
-  // 3 - No Valid Output
   ensStatus = myENS.getFlags();
 }
 
 void loop() {
-  if (myENS.checkDataStatus()) {
 
-    if (printedCompensation == false) {
-      Serial.print(myENS.getTempCelsius());
-      Serial.print(",");
-      printedCompensation = true;
-      delay(500);
-    }
+
+  /*if (myENS.checkDataStatus()) {
+if (printedCompensation == false) {
+Serial.print(myENS.getTempCelsius());
+Serial.print(",");
+printedCompensation = true;
+delay(500);}*/
+
 
 Serial.print(tempC);
 Serial.print(",");
@@ -96,17 +90,6 @@ Serial.print(",");
 Serial.print(rh);
 Serial.print(",");
 Serial.println(myENS.getECO2());
-//Serial.println(",");
-
-    
 delay(500);
-  }
+} 
 
-  rh = myBME280.readFloatHumidity();
-  tempC = myBME280.readTempC();
-
- 
-
-  
-  delay(500);
-}
