@@ -1,18 +1,16 @@
-// Lets create a simple meter
-
 // Import Meter library
 import meter.*;
 
 // Import serial library
 import processing.serial.*;
 
-Serial port; // Define a port
+Serial port;// Define a port
 
 Meter m, m2, m3, m4, m5;
 
 void setup(){
   // First we need to create a empty window
-  size(1200, 900); // Size of the window (width, height)
+  size(1500, 1000); // Size of the window (width, height)
   background(0, 0, 0); // Background color of window (R,G,B)
   
   // Create new port
@@ -118,7 +116,7 @@ void setup(){
   
   m4.setTitleFontSize(20);
   m4.setTitleFontName("Arial bold");
-  m4.setTitle("Air quality (%)");
+  m4.setTitle("TVOC ");
   
   // Change meter scale values
   String[] scaleLabels4 = {"100","200", "300", "400", "500", "600", "700", "800", "900", "1000", "1100", "1200", "1300", "1400", "1500", "1600", "1700", "1800", "1900", "2000", "2100", "2200", "2300"};
@@ -177,19 +175,21 @@ void draw(){
   
   if (port.available() > 0){
     String val = port.readString(); // read incoming string on serial port
+    
     // First we need to separate temperature and humidity values
     String[] list = split(val, ','); // splits value separated by ','
-    float temp = float(list[0]); // first value is Temperature
-    float air = float(list[1]);  //second value air quality
-    float hum = float(list[2]);  //third value is Humidity
-    float tvoc = float(list[3]);  // total volatil organic compounds
-    float co2 = float(list[4]);  // Co2 concentration
+    int temp = int(list[0]); // first value is Temperature
+    int air = int(list[1]);  //second value air quality
+    int tvoc = int(list[2]);  //third value is Humidity
+    int hum = int(list[3]);  // total volatil organic compounds
+    int co2 = int(list[4]);  // Co2 concentration
+    
     m.updateMeter(int(temp)); // int is used due to updateMeter accepts only int values
     m2.updateMeter(int(air));
     m3.updateMeter(int(hum));
     m4.updateMeter(int(tvoc));
     m5.updateMeter(int(co2));
 
-    println("Temperature: " + temp + " C  " + "Humidity: " + hum+ "%"+"Air quality (1-5): "+air+ "Total volatile organic compounds: " + tvoc+ "ppb" + "Co2 concentration: " + co2+ "ppm");
+    println("Temperature: " + temp + " ºC  " + "Air quality (1-5): "+air+"Humidity: " + hum+ "%"+ "Total volatile organic compounds: " + tvoc+ "ppb" + "Co2 concentration: " + co2+ "ppm");
   }
 }
