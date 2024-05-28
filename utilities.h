@@ -6,7 +6,7 @@
 * RadioLib Library supports also SX1262/SX1268 see https://github.com/Xinyuan-LilyGO/LilyGo-LoRa-Series/tree/master/examples/RadioLibExamples
 * */
 // #define LILYGO_TBeam_V0_7
-// #define LILYGO_TBeam_V1_X
+#define LILYGO_TBeam_V1_X
 // #define LILYGO_T3_V1_0
 // #define LILYGO_T3_V1_3
 // #define LILYGO_T3_V1_6
@@ -19,7 +19,7 @@
 * Option: 433E6,470E6,868E6,915E6
 * */
 
-#define LoRa_frequency      433E6
+#define LoRa_frequency      901E6
 
 
 #define UNUSE_PIN                   (0)
