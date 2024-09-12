@@ -9,7 +9,7 @@ This GitHub repository contains:
 
 Special OWN CREATION:
 - Navigation System that compares two different coordinates to calculate (with trigonometry) the track to the destination location previouly set in the code.
-- Structure of a code specially created with the intention to make the mission of a automatic and controlled landing.
+- Structure of a code specially created with the intention to make the mission of an automatic and controlled landing.
 
 Used for CanSat 2024, MSEI team. SPAIN, BALEARIC ISLANDS.
 
